@@ -1,0 +1,103 @@
+{% extends './body.html' %}
+
+{% block title %} Index {% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css')}}">
+{% endblock %}
+
+{% block container %}
+<div class="row" style="color: aliceblue;">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <h1>Libreria "Covel"</h1>
+        {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+        <br />
+        {% for messages in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="color: aliceblue;">
+            <strong style="font-size: 14px;">{{ message }}</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+
+        {% endif %}
+
+        {% endwith %}
+    </div>
+</div>
+
+<hr>
+<div class="row" style="color: aliceblue;">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <h2>{{ data.titulo }}</h2>
+  </div>
+  {% if current_user.tipousuario.id == 1 %}
+    {% block content %}
+      <!-- Botón para agregar un nuevo libro -->
+      <a href="{{ url_for('add_book') }}" class="btn btn-success">Agregar Nuevo Libro</a>
+    {% endblock %}    
+  {% if data.libros_vendidos|length > 0 %}
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12"  style="color: aliceblue;">
+    <div class="table-responsive">
+      <table class="table table-striped" style="color: aliceblue;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Libro</th>
+            <th>Unidades Vendidas</th>
+            <th>Precio Unit.</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set contador = namespace(total=0) %}
+          {% for l in data.libros_vendidos %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ l.titulo }}</td>
+            <td>{{ l.unidades_vendidas }}</td>
+            <td>S/. {{ l.precio }}</td>
+            <td>S/. {{ (l.precio * l.unidades_vendidas) }}</td>
+          </tr>
+          {% set contador.total = contador.total + (l.precio * l.unidades_vendidas) %}
+          {% endfor %}
+          <td colspan="4"></td>
+            <td>S/. {{ contador.total }}</td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" style="color: aliceblue;">
+    <h2>Aun no existen libros vendidos...</h2>
+  </div>
+  {% endif %}
+
+  {% else %}
+
+  {% if data.compras|length > 0 %}
+  
+  {% for c in data.compras %}
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4" style="color: black;">
+        <div class="card mb-4 shadow-sm">
+            {% set url = 'img/portadas/' + c.libro.isbn + '.jpg' %}
+            <img class="card-img-top" src="{{ url_for('static', filename=url ) }}" height="320" alt="{{ c.libro.titulo }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ c.libro.titulo }} <span style="float: right;"> S/. {{ c.libro.precio }}</span></h5>
+                <p class="card-text">Comprado: {{ c.formatted_date() }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" style="color: aliceblue;">
+    <h2>Aun no has comprado libros...</h2>
+  </div>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

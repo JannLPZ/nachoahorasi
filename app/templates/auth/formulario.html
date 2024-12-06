@@ -1,0 +1,73 @@
+{% extends './base.html' %}
+
+{% block title %} Inicio de Sesion {% endblock %}
+
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block body %}
+<form class="form-signin" action="{{ url_for('registro') }}" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <img class="mb-4" src="{{ url_for('static', filename='img/halcon1.svg')}}" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Registro de usuario</h1>
+
+    <div class="form-floating">
+        <input type="text" name="nombre_usuario" class="form-control" id="nombre_usuario" placeholder="Nombre completo" required>
+        <label for="floatingNombreCompleto">Nombre</label>
+      </div>
+      <br />
+      <div class="form-floating">
+        <input type="text" name="direccion" class="form-control" id="floatingDireccion" placeholder="Dirección" required>
+        <label for="floatingDireccion">Dirección</label>
+      </div>
+      <br />
+      <div class="form-floating">
+        <input type="email" name="correo" class="form-control" id="floatingCorreo" placeholder="Correo electrónico" required>
+        <label for="floatingCorreo">Correo electrónico</label>
+      </div>
+      <br />
+      <div class="form-floating">
+        <input type="password" name="contrasena" class="form-control" id="floatingContrasena" placeholder="Contraseña" required>
+        <label for="floatingContrasena">Contraseña</label>
+      </div>
+
+      <br />
+      <div class="form-floating">
+        <input type="tel" name="telefono" class="form-control" id="floatingTelefono" placeholder="Teléfono" required>
+        <label for="floatingTelefono">Teléfono</label>
+      </div>
+    
+    <button class="btn btn-primary w-100 py-2" type="submit">Confirmar</button>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+
+    {% if messages %}
+    <br>
+    {% for category, message in messages %}
+
+    {% if category == 'warning' %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong style="font-size: 14px;">{{ message }}</strong> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong style="font-size: 14px;">{{ message }}</strong> 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</form>
+
+{% block customJS %}
+
+<script src="{{ url_for('static', filename='js/login.js')}}"></script>
+{% endblock %}
+{% endblock %}
